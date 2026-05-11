@@ -1,0 +1,29 @@
+{% extends "index.html" %}
+{% block title %}ToDo List - Lista zadań{% endblock %}
+    {% block content %}
+    <h2>Lista zadań</h2>
+    <a href="{{ url_for('add_task') }}">Dodaj zadanie ➕</a>
+{% if tasks|length == 0 %}
+<h3>Brak zadań na liście.</h3>
+{% else %}
+    <ul style="list-style-type: none; padding: 0; margin: 0;">
+        {% for task in tasks %}
+        <li>
+         {% if task["done"] == 1 %}
+            ✔
+         {% else %}
+            ✖
+         {% endif %}
+          <a href="{{url_for('task', task_id=task['id'])}}">{{task["title"]}}</a> <small>({{ task["created_at"] }})</small><br />
+          <form method="post" action="{{url_for('update_tasks_status', task_id=task['id'])}}">
+            <input type="hidden" name="view_name" value="list_tasks" />
+            <button type="submit">Zmień status</button>
+          </form>
+          <form method="post" action="{{url_for('delete_task', task_id=task['id'])}}">
+            <button type="submit">Usuń</button>
+          </form>
+        </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+    {% endblock %}

@@ -1,0 +1,21 @@
+{% extends "index.html" %}
+{% block title %}ToDo List - Lista pracowników{% endblock %}
+    {% block content %}
+    <h2>Lista pracowników</h2>
+{% if employees|length == 0 %}
+<h3>Brak pracowników na liście</h3>
+{% else %}
+    <ul>
+        {% for employee in employees %}
+            <li class="employee-item">
+                <div class="employee-title">
+                    <strong>{{ employee["name"] }} {{ employee["surname"] }}</strong>
+                    <br>
+                    <small>({{ employee['positions']['main_position'] }})</small>
+                </div>
+                <br>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+    {% endblock %}
