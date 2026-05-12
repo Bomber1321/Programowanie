@@ -1,0 +1,26 @@
+{% extends "index.html" %}
+{% block title %}Grafik - Edycja pracownika{% endblock %}
+    {% block content %}
+    <h2>Edycja pracownika</h2>
+
+    <div class="employee-title">
+        <strong>{{ employee["name"] }} {{ employee["surname"] }}</strong>
+        <br>
+        <ul>
+            <li><form method="post" action='{{ url_for('edit_employee', employee_id=employee['id']) }}'>
+                <strong>Główna pozycja:</strong> 
+                <select name="main_position">
+                    <option value="{{ employee['positions']['main_position'] }}" selected>{{ employee['positions']['main_position'] }}</option>
+                    <option value="Pozycja 1">Pozycja 1</option>
+                    <option value="Pozycja 2">Pozycja 2</option>
+                </select>
+                <button type="submit">Zapisz</button>
+            </form></li>
+            <li><strong>Inne pozycje:</strong> {{ employee['positions']['other_positions']|join(', ') }}</li>
+            <li><strong>Aktywny/a:</strong> {{ 'Tak' if employee['active'] == 1 else 'Nie' }}</li>
+            <li><strong>Data dodania:</strong> {{ employee['created_at'] }}</li>
+        </ul>
+    </div>
+
+
+    {% endblock %}

@@ -1,3 +1,5 @@
+import json
+
 from flask import Flask, render_template, g, redirect, url_for, flash, request
 import secrets
 import sqlite3
@@ -92,8 +94,46 @@ def ping_db():
 @app.route("/list_employees")
 def list_employees():
     db = get_db()
-    employees = db.execute("SELECT id, name, surname, positions, active, created_at FROM employees ORDER by created_at DESC").fetchall()
+    raw_employees = db.execute("SELECT id, name, surname, positions, active, created_at FROM employees ORDER by created_at DESC").fetchall()
+    employees = []
+    for emp in raw_employees:
+        emp_data = dict(emp)
+        
+        if emp_data.get('positions'):
+            try:
+                emp_data['positions'] = json.loads(emp_data['positions'])
+            except json.JSONDecodeError:
+                emp_data['positions'] = {}
+        else:
+            emp_data['positions'] = {}
+            
+        employees.append(emp_data)
+        
     return render_template("list_employees.html", employees=employees)
+
+@app.route("/edit_employee/<int:employee_id>", methods=["GET","POST"])
+def edit_employee(employee_id):
+    db = get_db()    
+    
+    ### Obsługa POST - aktualizacja danych pracownika
+    if request.method == "POST":
+    
+    ### Pobranie aktualnych danych pracownika z bazy
+    employee = db.execute("SELECT id, name, surname, positions, active, created_at FROM employees WHERE id = ?", (employee_id,)).fetchone()
+    if employee is None:
+        flash("Nie znaleziono pracownika o podanym ID.", "danger")
+        return redirect(url_for("list_employees"))
+    
+    employee_data = dict(employee)
+    if employee_data.get('positions'):
+        try:
+            employee_data['positions'] = json.loads(employee_data['positions'])
+        except json.JSONDecodeError:
+            employee_data['positions'] = {}
+    else:
+        employee_data['positions'] = {}
+    
+    return render_template("edit_employee.html", employee=employee_data)
 
 if __name__ == "__main__":
     app.run(debug=True)
