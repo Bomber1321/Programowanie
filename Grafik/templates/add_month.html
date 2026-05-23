@@ -1,0 +1,39 @@
+{% extends "index.html" %}
+{% block title %}Grafik - Tworzenie miesiąca{% endblock %}
+    {% block content %}
+    <h2>Tworzenie miesiąca</h2>
+    <form method="post" action="{{ url_for('add_month') }}">
+        <label for="year">Rok:</label>
+        <input type="number" name="year" id="year" min="1900" max="2100" required placeholder="np. 2024">
+        <label for="month">Wybierz miesiąc:</label>
+        <select name="month" id="month">
+            {% for month in ['Styczeń', 'Luty', 'Marzec', 'Kwiecień', 'Maj', 'Czerwiec', 'Lipiec', 'Sierpień', 'Wrzesień', 'Październik', 'Listopad', 'Grudzień'] %}
+                <option value="{{ month }}" required>{{ month }}</option>
+            {% endfor %}
+        </select>
+        <label for="month_length">Długość miesiąca (dni):   </label>
+        <input type="number" name="month_length" id="month_length" min="28" max="31" required placeholder="28-31">
+        <label for="first_day">Pierwszy dzień:</label>
+        <select name="first_day" id="first_day">
+            {% for day in ['Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota', 'Niedziela'] %}
+                <option value="{{ day }}" required>{{ day }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Utwórz</button>
+    </form>
+        <h2>Istniejące miesiące:</h2>
+        {% if months|length == 0 %}
+            <p>Brak utworzonych miesięcy.</p>
+        {% else %}
+            <ul>
+                
+                {% for month in months %}
+                <form method="get" action="{{ url_for('month_availability', month_id=month['id']) }}">
+                    <li>{{ month['name'] }} {{ month['year'] }}- ma {{ month['length'] }} dni, zaczyna się od {{ month['weekday_start'] }} <button type="submit" >Edytuj</button></li>
+                </form>
+                {% endfor %}
+                
+            </ul>
+        {% endif %}
+
+    {% endblock %}

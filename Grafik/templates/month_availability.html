@@ -1,0 +1,40 @@
+{% extends "index.html" %}
+{% block title %}Grafik - Edycja dostępności{% endblock %}
+    {% block content %}
+    <h2>Edycja dostępności- {{ month_info['name'] }}</h2>
+    <form method="post" action="{{ url_for('month_availability', month_id=month_info['id']) }}">
+        <table class="toggle-table">
+            <tr>
+                <th>Data</th>
+                <th>Dzień tygodnia</th>
+                {% for employee in employees %}
+                    {% if employee['active'] == 1 %}
+                        <th>{{ employee['name'] }} {{ employee['surname'] }}</th>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+
+            {% for day in calendar %}
+                <tr {{ 'class=weekend' if day['weekday'] in ['Sobota', 'Niedziela'] else '' }}>
+                    <td>{{ day['day_index'] }}</td>
+                    <td>{{ day['weekday'] }}</td>
+                    {% for employee in employees %}
+                        {% if employee['active'] == 1 %}
+                            <td class="checktd">
+                                <label class="cell-label">
+                                    <input type="checkbox" name="availability_{{ employee['id'] }}_{{ day['day_index'] }}" value="1" {% if day['available'] == 1 %}checked{% endif %}{% if day['available'] == 0 %}unchecked{% endif %}>
+                                    <span class="cell-content"></span>
+                                </label>
+                            </td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+
+
+        </table>
+        <button type="submit" class="submit-table">Zapisz</button>
+
+
+
+    {% endblock %}

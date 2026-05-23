@@ -1,0 +1,112 @@
+:root {
+--body_color: #222831;
+--main_color: #393E46;
+--text_color: #00ADB5;
+
+}
+body{
+    background-color: var(--body_color, value);
+    color: var(--text_color, value);
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    width: 80%;
+    margin: 0 auto;
+    background-color: var(--main_color, value);
+    padding: 20px;
+    border-radius: 8px;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: white;
+    color: black;
+    font-weight: bold;
+}
+th, td {
+    border: 1px solid #000000;
+    padding: 10px;
+    text-align: center;
+}
+tr.weekend {
+    background-color: #e26969;
+}
+a {
+    color: #EEEEEE;
+    text-decoration: none;
+    margin-right: 15px;
+    margin-top: 10px;
+    background-color: var(--body_color);
+    color: var(--text_color);
+    border-radius: 8px;
+    padding: 10px;
+}
+.toggle-table {
+  border-collapse: collapse;
+}
+
+
+.toggle-table td {
+  border: 1px solid #ccc;
+  padding: 0; 
+}
+
+
+.cell-label {
+  display: block;
+  cursor: pointer;
+  margin: 0;
+}
+.cell-label {
+  display: block;
+  cursor: pointer;
+  margin: 0;
+}
+
+
+.cell-label input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+
+.cell-content {
+  display: block;
+  padding: 20px 30px;
+  background-color: #f9f9f9;
+  color: #333;
+  text-align: center;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.cell-label:hover .cell-content {
+  background-color: #e0e0e0;
+}
+
+.cell-label input[type="checkbox"]:checked ~ .cell-content {
+  background-color: #4CAF50; /* Green background */
+  color: white;              /* White text */
+}
+
+.weekend .cell-label input[type="checkbox"]:checked ~ .cell-content {
+  background-color: #045206; /* Green background */
+  color: white;              /* White text */
+}
+
+.submit-table {
+    margin-top: 20px;
+}
+
+button {
+    background-color: var(--text_color);
+    color: var(--body_color);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+}

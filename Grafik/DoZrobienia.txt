@@ -1,0 +1,4 @@
+1. wyrównać szerokość kolumn
+2. bardziej obvious przycisk powrotu
+3. poprawic CSS tworzenie miesiąca
+3. dodawanie pracowników

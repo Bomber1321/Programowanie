@@ -7,17 +7,40 @@
         <strong>{{ employee["name"] }} {{ employee["surname"] }}</strong>
         <br>
         <ul>
-            <li><form method="post" action='{{ url_for('edit_employee', employee_id=employee['id']) }}'>
+            <li><form method="post" action='{{ url_for('edit_employee_main_position', employee_id=employee['id']) }}'>
                 <strong>Główna pozycja:</strong> 
                 <select name="main_position">
                     <option value="{{ employee['positions']['main_position'] }}" selected>{{ employee['positions']['main_position'] }}</option>
-                    <option value="Pozycja 1">Pozycja 1</option>
-                    <option value="Pozycja 2">Pozycja 2</option>
+                    {%for position in ['Pizzer', 'Barman', 'Kelner', 'Kierowca'] %}
+                        {% if position != employee['positions']['main_position'] %}
+                            <option value="{{ position }}">{{ position }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+                    <button type="submit">Zapisz</button>
+                </form></li>
+            <li><strong>Inne pozycje:</strong>
+                <!--{% if employee['positions']['other_positions'] != ['None'] %}
+                    {{ employee['positions']['other_positions']|join(', ') }}
+                {% endif %}
+                {% if employee['positions']['other_positions'] == ['None'] %}
+                    Brak
+                {% endif %}-->
+                <form method="post" action='{{ url_for('edit_employee_other_positions', employee_id=employee['id']) }}'>
+                    <select name="other_positions" multiple>
+                        {% for position in ['Pizzer', 'Barman', 'Kelner', 'Kierowca'] %}
+                            <option value="{{ position }}" {% if position in employee['positions']['other_positions'] %}selected{% endif %}>{{ position }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit">Zapisz</button>
+                </form></li>
+            <li><form method="post" action='{{ url_for('edit_employee_active', employee_id=employee['id']) }}'>
+                <strong>Aktywny/a:</strong> <select name="active">
+                    <option value="1" {% if employee['active'] == 1 %}selected{% endif %}>Tak</option>
+                    <option value="0" {% if employee['active'] == 0 %}selected{% endif %}>Nie</option>
                 </select>
                 <button type="submit">Zapisz</button>
             </form></li>
-            <li><strong>Inne pozycje:</strong> {{ employee['positions']['other_positions']|join(', ') }}</li>
-            <li><strong>Aktywny/a:</strong> {{ 'Tak' if employee['active'] == 1 else 'Nie' }}</li>
             <li><strong>Data dodania:</strong> {{ employee['created_at'] }}</li>
         </ul>
     </div>
