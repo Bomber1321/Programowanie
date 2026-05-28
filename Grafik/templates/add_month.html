@@ -29,7 +29,7 @@
                 
                 {% for month in months %}
                 <form method="get" action="{{ url_for('month_availability', month_id=month['id']) }}">
-                    <li>{{ month['name'] }} {{ month['year'] }}- ma {{ month['length'] }} dni, zaczyna się od {{ month['weekday_start'] }} <button type="submit" >Edytuj</button></li>
+                    <li>{{ month['name'] }} {{ month['year'] }} ma {{ month['length'] }} dni, zaczyna się od {{ month['weekday_start'] }} <button type="submit" >Edytuj</button></li>
                 </form>
                 {% endfor %}
                 

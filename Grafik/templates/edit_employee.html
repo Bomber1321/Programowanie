@@ -3,29 +3,25 @@
     {% block content %}
     <h2>Edycja pracownika</h2>
 
-    <div class="employee-title">
+    <div class="employee-details-box">
         <strong>{{ employee["name"] }} {{ employee["surname"] }}</strong>
         <br>
         <ul>
-            <li><form method="post" action='{{ url_for('edit_employee_main_position', employee_id=employee['id']) }}'>
-                <strong>Główna pozycja:</strong> 
-                <select name="main_position">
-                    <option value="{{ employee['positions']['main_position'] }}" selected>{{ employee['positions']['main_position'] }}</option>
-                    {%for position in ['Pizzer', 'Barman', 'Kelner', 'Kierowca'] %}
-                        {% if position != employee['positions']['main_position'] %}
+            <li class="employee-detail">
+                <form method="post" action='{{ url_for('edit_employee_main_position', employee_id=employee['id']) }}'>
+                    <strong>Główna pozycja:</strong> 
+                    <select name="main_position">
+                        <option value="{{ employee['positions']['main_position'] }}" selected>{{ employee['positions']['main_position'] }}</option>
+                        {%for position in ['Pizzer', 'Barman', 'Kelner', 'Kierowca'] %}
+                            {% if position != employee['positions']['main_position'] %}
                             <option value="{{ position }}">{{ position }}</option>
                         {% endif %}
                     {% endfor %}
                 </select>
                     <button type="submit">Zapisz</button>
                 </form></li>
-            <li><strong>Inne pozycje:</strong>
-                <!--{% if employee['positions']['other_positions'] != ['None'] %}
-                    {{ employee['positions']['other_positions']|join(', ') }}
-                {% endif %}
-                {% if employee['positions']['other_positions'] == ['None'] %}
-                    Brak
-                {% endif %}-->
+            <li class="employee-detail">
+                <strong>Inne pozycje:</strong>
                 <form method="post" action='{{ url_for('edit_employee_other_positions', employee_id=employee['id']) }}'>
                     <select name="other_positions" multiple>
                         {% for position in ['Pizzer', 'Barman', 'Kelner', 'Kierowca'] %}
@@ -33,16 +29,28 @@
                         {% endfor %}
                     </select>
                     <button type="submit">Zapisz</button>
-                </form></li>
-            <li><form method="post" action='{{ url_for('edit_employee_active', employee_id=employee['id']) }}'>
-                <strong>Aktywny/a:</strong> <select name="active">
-                    <option value="1" {% if employee['active'] == 1 %}selected{% endif %}>Tak</option>
-                    <option value="0" {% if employee['active'] == 0 %}selected{% endif %}>Nie</option>
-                </select>
-                <button type="submit">Zapisz</button>
-            </form></li>
-            <li><strong>Data dodania:</strong> {{ employee['created_at'] }}</li>
+                </form>
+            </li>
+            <li class="employee-detail">
+                <form method="post" action='{{ url_for('edit_employee_active', employee_id=employee['id']) }}'>
+                    <strong>Aktywny/a:</strong> <select name="active">
+                        <option value="1" {% if employee['active'] == 1 %}selected{% endif %}>Tak</option>
+                        <option value="0" {% if employee['active'] == 0 %}selected{% endif %}>Nie</option>
+                    </select>
+                    <button type="submit">Zapisz</button>
+                </form>
+            </li>
+            <li class="employee-detail">
+                <strong>Data dodania:</strong> {{ employee['created_at'] }}
+                <form action="{{ url_for('delete_employee', employee_id=employee['id']) }}" method="post" onsubmit="return confirm('Czy na pewno chcesz usunąć tego pracownika?');">
+                    <button type="submit" class="delete-button">Usuń pracownika</button>
+                </form>
+            </li>
         </ul>
+        <form action="{{ url_for('list_employees') }}" method="get">
+            <button type="submit">Powrót do listy pracowników</button>
+        </form>
+
     </div>
 
 

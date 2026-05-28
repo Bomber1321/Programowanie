@@ -30,9 +30,45 @@ th, td {
     padding: 10px;
     text-align: center;
 }
+th.column-date {
+    width: 2%;
+}
+
+.column-date:hover {
+    background-color: #00ADB5;
+    color: white;
+    cursor: pointer;
+
+}
+
+th.column-weekday {
+    width: 8%;
+}
 tr.weekend {
     background-color: #e26969;
 }
+th.employee-column {
+    background-color: white;
+    position: sticky;
+    top: 0;
+}
+th.employee-column:hover {
+    background-color: #00ADB5;
+    color: white;
+    cursor: pointer;
+}
+
+
+.date-row:hover {
+    background-color: #00ADB5;
+    color: white;
+    cursor: pointer;
+}
+
+
+
+
+
 a {
     color: #EEEEEE;
     text-decoration: none;
@@ -45,6 +81,8 @@ a {
 }
 .toggle-table {
   border-collapse: collapse;
+  table-layout: fixed;
+  height: 50%;
 }
 
 
@@ -54,11 +92,6 @@ a {
 }
 
 
-.cell-label {
-  display: block;
-  cursor: pointer;
-  margin: 0;
-}
 .cell-label {
   display: block;
   cursor: pointer;
@@ -78,35 +111,81 @@ a {
 .cell-content {
   display: block;
   padding: 20px 30px;
-  background-color: #f9f9f9;
+  background-color: #ff0000;
   color: #333;
   text-align: center;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .cell-label:hover .cell-content {
-  background-color: #e0e0e0;
+  background-color: #ff8787;
+}
+
+.cell-label:hover input[type="checkbox"]:checked ~ .cell-content {
+  background-color: #7edf82; 
+}
+
+.cell-label input[type="checkbox"] ~ .cell-content {
+  background-color: #ff5e00; 
+}
+
+.cell-label:hover input[type="checkbox"] ~ .cell-content {
+  background-color: #fdad7e; 
 }
 
 .cell-label input[type="checkbox"]:checked ~ .cell-content {
-  background-color: #4CAF50; /* Green background */
-  color: white;              /* White text */
+  background-color: #4CAF50; 
 }
 
 .weekend .cell-label input[type="checkbox"]:checked ~ .cell-content {
-  background-color: #045206; /* Green background */
-  color: white;              /* White text */
+  background-color: #045206; 
 }
 
-.submit-table {
-    margin-top: 20px;
+.weekend .cell-label:hover input[type="checkbox"] ~ .cell-content {
+  background-color: #9b3900; 
 }
+
+.weekend .cell-label input[type="checkbox"] ~ .cell-content {
+  background-color: #5f0000; 
+}
+.weekend .cell-label:hover input[type="checkbox"]:checked ~ .cell-content {
+  background-color: #056e09; 
+}
+
+form.availability-form {
+  display: flex;
+  flex-direction:column;
+  align-items: center;
+}
+.submit-table {
+  margin-top: 30px;
+  margin-bottom: 20px;
+  width: 15%;
+  height: 5vh;
+  padding: auto;
+  font-size: 2em;
+}
+
 
 button {
-    background-color: var(--text_color);
-    color: var(--body_color);
-    border: none;
-    padding: 10px 20px;
+  background-color: var(--text_color);
+  color: var(--body_color);
+  border: none;
+  padding: 5px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+button.delete-button {
+  background-color: #741414;
+  color: white;
+  float: right;
+}
+.employee-details-box {
+    background-color: var(--body_color);
+    color: var(--text_color);
+    padding: 20px;
     border-radius: 8px;
-    cursor: pointer;
+    width: 50%;
+    margin: 20px auto;
 }

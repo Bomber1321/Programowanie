@@ -58,7 +58,6 @@ def get_db():
     return g.db
 
 
-
 @app.teardown_appcontext
 def close_db(exception):
     db = g.pop("db", None)
@@ -165,9 +164,34 @@ def add_month():
         months = db.execute("SELECT * FROM months").fetchall()
     return render_template("add_month.html", months=months)
 
-@app.route("/list_employees")
+@app.route("/list_employees", methods=["GET","POST"])
 def list_employees():
     db = get_db()
+    if request.method == "POST":
+        name = request.form.get("name")
+        surname = request.form.get("surname")
+        main_position = request.form.get("main_position")
+        other_positions = request.form.getlist("other_positions")
+        
+        if main_position not in ['Pizzer', 'Barman', 'Kelner', 'Kierowca']:
+            flash("Nieprawidłowa pozycja główna.", "danger")
+            return redirect(url_for("list_employees"))
+        
+        if other_positions == ['']:
+            other_positions = ['None']
+        
+        for pos in other_positions:
+            if pos not in ['Pizzer', 'Barman', 'Kelner', 'Kierowca','None']:
+                flash("Nieprawidłowa pozycja dodatkowa: {}".format(pos), "danger")
+                return redirect(url_for("list_employees"))
+        
+        positions_json = json.dumps({"main_position": main_position, "other_positions": other_positions})
+        
+        db.execute("INSERT INTO employees (name, surname, positions) VALUES (?, ?, ?)", 
+                   (name, surname, positions_json))
+        db.commit()
+        flash("Pracownik został dodany.", "success")
+        return redirect(url_for("list_employees"))
     raw_employees = db.execute("SELECT id, name, surname, positions, active, created_at FROM employees ORDER by created_at DESC").fetchall()
     employees = []
     for emp in raw_employees:
@@ -281,6 +305,14 @@ def edit_employee_other_positions(employee_id):
     flash("Pozycje dodatkowe zostały zaktualizowane.", "success")
     return redirect(url_for("edit_employee", employee_id=employee_id))
 
+@app.route("/delete_employee/<int:employee_id>", methods=["POST"])
+def delete_employee(employee_id):
+    db = get_db()
+    db.execute("DELETE FROM employees WHERE id = ?", (employee_id,))
+    db.commit()
+    flash("Pracownik został usunięty.", "success")
+    return redirect(url_for("list_employees"))
+
 @app.route("/month/<int:month_id>/availability", methods=["GET", "POST"])
 def month_availability(month_id):
     db = get_db()
@@ -298,7 +330,33 @@ def month_availability(month_id):
 
     return render_template("month_availability.html", month_info=month, calendar=calendar, employees=employees)
 
-
+@app.route("/month/<int:month_id>/edit_availability", methods=["POST"])
+def edit_availability(month_id):
+    db = get_db()
+    month = db.execute("SELECT * FROM months WHERE id = ?", (month_id,)).fetchone()
+    
+    if month is None:
+        flash("Nie znaleziono miesiąca o podanym ID.", "danger")
+        return redirect(url_for("add_month"))
+    
+    db.execute("UPDATE availability SET available = 0 WHERE id_month = ?", (month_id,))
+    
+    for key, value in request.form.items():
+        if key.startswith("availability_"):
+            _, emp_id, day_index = key.split("_")
+            emp_id = int(emp_id)
+            day_index = int(day_index)
+            available = 1 if value == "1" else 0
+            
+            db.execute("""
+                UPDATE availability 
+                SET available = ? 
+                WHERE id_employee = ? AND id_month = ? AND day = ?
+            """, (available, emp_id, month_id, day_index))
+    
+    db.commit()
+    flash("Dostępność została zaktualizowana.", "success")
+    return redirect(url_for("month_availability", month_id=month_id))
 
 if __name__ == "__main__":
     app.run(debug=True)

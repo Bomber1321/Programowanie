@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Grafik{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='CSS/style.css') }}">
+    <script src="{{ url_for('static', filename='JS/script.js') }}"></script>
 </head>
 <body>
     <div class="container"> 
@@ -12,7 +13,7 @@
         <div class="nav"> 
         <h1><a href="{{ url_for('index') }}">GRAFIK</a></h1>
         <a href="{{ url_for('list_employees') }}">Lista Pracowników</a>
-        <a href="{{ url_for('add_month') }}">Dodaj Miesiąc</a>
+        <a href="{{ url_for('add_month') }}">Lista Miesięcy</a>
         </div>
     </header>
     <section class="content">

@@ -1,6 +1,23 @@
 {% extends "index.html" %}
 {% block title %}ToDo List - Lista pracowników{% endblock %}
     {% block content %}
+    <h2>Dodawanie pracowników</h2>
+    <form method="post" action="{{ url_for('list_employees') }}">
+        <label for="name">Imię:</label>
+        <input type="text" name="name" id="name" required placeholder="np. Jan">
+        <label for="surname">Nazwisko:</label>
+        <input type="text" name="surname" id="surname" required placeholder="np. Kowalski">
+        <label for="main_position">Główne stanowisko:</label>
+        <select name="main_position" id="main_position" required>
+            <option value="">Wybierz stanowisko</option>
+    {%for position in ['Pizzer', 'Barman', 'Kelner', 'Kierowca'] %}
+            <option value="{{ position }}">{{ position }}</option>
+    {% endfor %}
+        </select>
+        <label for="other_positions">Inne stanowiska (oddzielone przecinkami):</label>
+        <input type="text" name="other_positions" id="other_positions" placeholder="np. Pizzer, Kelner">
+        <button type="submit">Dodaj</button>
+    </form>
     <h2>Lista pracowników</h2>
 {% if employees|length == 0 %}
 <h3>Brak pracowników na liście</h3>

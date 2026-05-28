@@ -1,4 +1,19 @@
-1. wyrównać szerokość kolumn
-2. bardziej obvious przycisk powrotu
-3. poprawic CSS tworzenie miesiąca
-3. dodawanie pracowników
+0. lista/dodawanie stanowisk
+1. dodawanie pracowników- select stanowiska
+2. potrzebne zmiany:
+w dniach
+według godzin dla umowy zlecenia(160)
+3. upload miesiąca do bazy
+4. download pliku excela
+5. api
+-. automatyczne tworzenie grafiku raczej odpada
+
+
+
+python -m venv venv
+Set-ExecutionPolicy Unrestricted -Scope Process
+.\venv\Scripts\activate
+pip install flask
+flask --app app init-db
+flask --app app seed-db
+flask --app app run --debug
