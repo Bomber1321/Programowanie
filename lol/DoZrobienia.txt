@@ -3,12 +3,10 @@
 2. potrzebne zmiany:
 w dniach
 według godzin dla umowy zlecenia(160)
-3. upload miesiąca do bazy✅
+3. upload miesiąca do bazy
 4. download pliku excela
 5. api
 -. automatyczne tworzenie grafiku raczej odpada
-
-                                    <span class="cell-content">{{ availability[(month_info['length'])*(employee['id'])-(month_info['length'])-1+day['day_index']][4] }}_{{ availability[(month_info['length'])*(employee['id'])-(month_info['length'])-1+day['day_index']][1] }}_{{ day['day_index'] }}</span>
 
 
 
@@ -16,7 +14,6 @@ python -m venv venv
 Set-ExecutionPolicy Unrestricted -Scope Process
 .\venv\Scripts\activate
 pip install flask
-pip install openpyxl
 flask --app app init-db
 flask --app app seed-db
 flask --app app run --debug

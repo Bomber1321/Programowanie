@@ -1,0 +1,32 @@
+{% extends "index.html" %}
+{% block title %}Grafik - Wymagania{% endblock %}
+    {% block content %}
+    <h2>Wymagania</h2>
+
+    {% if requirements|length == 0 %}
+        <h3>Brak wymagań na liście</h3>
+    {% endif %}
+
+    <table>
+        <tr>
+            <th>Dzień tygodnia</th>
+            <th>Stanowisko</th>
+            <th>Wymagana liczba pracowników</th>
+            <th>Zmień</th>
+        </tr>
+        {% for requirement in requirements %}
+        <tr>
+            <td>{{ requirement.weekday }}</td>
+            <td>{{ requirement.position_name }}</td>
+            <td>{{ requirement.required_count }}</td>
+            <td>
+                <form method="post" action="{{ url_for('edit_requirement', requirement_id=requirement['id']) }}" >
+                    <input type="number" name="required_count" value="{{ requirement.required_count }}" min="0" required>
+                    <button type="submit">Zapisz</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+
+
+    {% endblock %}

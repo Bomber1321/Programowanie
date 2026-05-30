@@ -1,0 +1,25 @@
+{% extends "index.html" %}
+{% block title %}Grafik - Stanowiska{% endblock %}
+    {% block content %}
+    <h2>Stanowiska</h2>
+    <h3>Dodaj nowe stanowisko</h3>
+    <form method="post" action="{{ url_for('positions') }}">
+        <label for="position_name">Nazwa stanowiska:</label>
+        <input type="text" name="position_name" id="position_name" required placeholder="np. Kierownik">
+        <button type="submit">Dodaj</button>
+    </form>
+    <h3>Lista Stanowisk</h3>
+    {% if positions|length == 0 %}
+        <h3>Brak stanowisk na liście</h3>
+    {% endif %}
+    
+    <ul>
+        {% for position in positions %}
+        <form method="post" action="{{ url_for('delete_position', position_id=position['id']) }}" onsubmit="return confirm('Czy na pewno chcesz usunąć to stanowisko?');">
+            <li>{{ position.name }} <button type="submit">Usuń</button></li>
+            <br>
+        </form>
+        {% endfor %}
+    </ul>
+        
+    {% endblock %}

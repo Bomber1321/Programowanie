@@ -10,10 +10,12 @@
         <label for="main_position">Główne stanowisko:</label>
         <select name="main_position" id="main_position" required>
             <option value="">Wybierz stanowisko</option>
-    {%for position in positions %}
-            <option value="{{ position['name'] }}">{{ position['name'] }}</option>
+    {%for position in ['Pizzer', 'Barman', 'Kelner', 'Kierowca'] %}
+            <option value="{{ position }}">{{ position }}</option>
     {% endfor %}
         </select>
+        <label for="other_positions">Inne stanowiska (oddzielone przecinkami):</label>
+        <input type="text" name="other_positions" id="other_positions" placeholder="np. Pizzer, Kelner">
         <button type="submit">Dodaj</button>
     </form>
     <h2>Lista pracowników</h2>
@@ -26,8 +28,8 @@
                 <div class="employee-title">
                     <strong>{{ employee["name"] }} {{ employee["surname"] }}</strong>
                     <br>
-                    <small>({{ employee['positions'] }})</small>
-    
+                    <small>({{ employee['positions']['main_position'] }})</small>
+                    {%if employee['positions']['other_positions'] != ['None'] and employee['positions']['other_positions'] != [] %}<small>({{ employee['positions']['other_positions']|join(', ') }})</small>{% endif %}
                     <form method="get" action='{{ url_for('edit_employee', employee_id=employee['id']) }}' style="display:inline;">
                         <button type="submit">Edytuj</button>
                     </form>

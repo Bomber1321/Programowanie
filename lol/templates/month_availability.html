@@ -1,0 +1,51 @@
+{% extends "index.html" %}
+{% block title %}Grafik - Edycja dostępności{% endblock %}
+    {% block content %}
+    <h2>Edycja dostępności: {{ month_info['name'] }}</h2>
+    {% for day in calendar %}
+        {% for employee in employees %}
+            {{month_info['name']}}_{{day['available']}}_{{employee['id']}}_{{day['day_index']}}
+            <br>
+        {% endfor %}
+    {% endfor %}
+    <form method="post" action="{{ url_for('edit_availability', month_id=month_info['id']) }}" class="availability-form">
+        {% set employees_count = 0 %}
+        {% for employee in employees %}
+            {% if employee['active'] == 1 %}
+                {% set employees_count = employees_count + 1 %}
+            {% endif %}
+        {% endfor %}
+        <table class="toggle-table">
+            <tr>
+                <th class="column-date" onclick="toggleCheckboxesAll()">Data</th>
+                <th class="column-weekday">Dzień tygodnia</th>
+                {% for employee in employees %}
+                    {% if employee['active'] == 1 %}
+                        <th class="employee-column" onclick="toggleCheckboxesByNames({{ employee['id'] }})">{{ employee['name'] }} {{ employee['surname'] }}</th>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+
+            {% for day in calendar %}
+                <tr {{ 'class=weekend' if day['weekday'] in ['Sobota', 'Niedziela'] else '' }}>
+                        <td class="date-row" onclick="toggleCheckboxesByDays({{ day['day_index'] }})">{{ day['day_index'] }}</td>
+                        <td>{{ day['weekday'] }}</td>
+                    {% for employee in employees %}
+                        {% if employee['active'] == 1 %}
+                            <td class="checktd">
+                                <label class="cell-label">
+                                    <input type="checkbox" name="availability_{{ employee['id'] }}_{{ day['day_index'] }}" value="1" {% if day['available'] == 1 %}checked{% else %}""{% endif %}>
+                                    <span class="cell-content">{{ day['available'] }}_{{ employee['id'] }}_{{ day['day_index'] }}</span>
+                                </label>
+                            </td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+
+
+        </table>
+        <button type="submit" class="submit-table">ZAPISZ</button>
+    </form>
+
+    {% endblock %}

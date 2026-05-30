@@ -2,12 +2,6 @@
 {% block title %}Grafik - Edycja dostępności{% endblock %}
     {% block content %}
     <h2>Edycja dostępności: {{ month_info['name'] }}</h2>
-    {% for day in calendar %}
-        {% for employee in employees %}
-            {{month_info['name']}}_{{day['available']}}_{{employee['id']}}_{{day['day_index']}}
-            <br>
-        {% endfor %}
-    {% endfor %}
     <form method="post" action="{{ url_for('edit_availability', month_id=month_info['id']) }}" class="availability-form">
         {% set employees_count = 0 %}
         {% for employee in employees %}
@@ -17,29 +11,45 @@
         {% endfor %}
         <table class="toggle-table">
             <tr>
-                <th class="column-date" onclick="toggleCheckboxesAll()">Data</th>
-                <th class="column-weekday">Dzień tygodnia</th>
+                <th class="column-date" onclick="toggleCheckboxesAll()" rowspan="2">Data</th>
+                <th class="column-weekday" rowspan="2">Dzień tygodnia</th>
                 {% for employee in employees %}
                     {% if employee['active'] == 1 %}
-                        <th class="employee-column" onclick="toggleCheckboxesByNames({{ employee['id'] }})">{{ employee['name'] }} {{ employee['surname'] }}</th>
+                        <th class="employee-column" onclick="toggleCheckboxesByNames({{ employee['id'] }})" rowspan="2">
+                            {{ employee['name'] }} {{ employee['surname'] }} 
+                            {{ employee['positions'] }}
+                        </th>
                     {% endif %}
                 {% endfor %}
+                <th class="column-requirements" colspan="{{ positions_length }}">Potrzeby</th>
             </tr>
-
+            <tr>
+                {% for position in positions %}
+                <th class="column-requirements"> {{ position['name'] }}</th>
+                {% endfor %}
+            </tr>
+            {% set employee_nr = -1 %}
             {% for day in calendar %}
                 <tr {{ 'class=weekend' if day['weekday'] in ['Sobota', 'Niedziela'] else '' }}>
                         <td class="date-row" onclick="toggleCheckboxesByDays({{ day['day_index'] }})">{{ day['day_index'] }}</td>
                         <td>{{ day['weekday'] }}</td>
-                    {% for employee in employees %}
-                        {% if employee['active'] == 1 %}
-                            <td class="checktd">
-                                <label class="cell-label">
-                                    <input type="checkbox" name="availability_{{ employee['id'] }}_{{ day['day_index'] }}" value="1" {% if day['available'] == 1 %}checked{% else %}""{% endif %}>
-                                    <span class="cell-content">{{ day['available'] }}_{{ employee['id'] }}_{{ day['day_index'] }}</span>
-                                </label>
-                            </td>
-                        {% endif %}
-                    {% endfor %}
+
+                        {% for employee in employees %}
+                            {% if employee['active'] == 1 %}
+                                {% set employee_nr = employee_nr + 65 %}
+                                <td class="checktd">
+                                    <label class="cell-label">
+                                        <input type="checkbox" class="availability-checkbox" data-day-index="{{ day['day_index'] }}" data-position-id="{{ employee['position_id'] }}" name="availability_{{ employee['id'] }}_{{ day['day_index'] }}" value="1" onchange="updateRequirementTotals()" {% if availability_map.get(employee['id'] ~ '_' ~ day['day_index'], 0) == 1 %}checked{% endif %}>
+                                        <span class="cell-content"></span>
+                                    </label>
+                                </td>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% for position in positions %}
+                            {% set req_count = requirements_by_weekday_position.get(day['weekday'], {}).get(position['id'], 0) %}
+                            <td class="requirements-column" data-weekday="{{ day['weekday'] }}" data-day-index="{{ day['day_index'] }}" data-position-id="{{ position['id'] }}" data-base-required="{{ req_count }}">{{ req_count }}</td>
+                        {% endfor %}
                 </tr>
             {% endfor %}
 
@@ -47,5 +57,77 @@
         </table>
         <button type="submit" class="submit-table">ZAPISZ</button>
     </form>
+
+    <script>
+        function toggleCheckboxesByNames(employeeId) {
+            const checkboxes = document.querySelectorAll(`input[name^="availability_${employeeId}_"]`);
+            if (checkboxes.length === 0) {
+                return;
+            }
+            const isChecked = checkboxes[0].checked;
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = !isChecked;
+            });
+            updateRequirementTotals();
+        }
+
+        function toggleCheckboxesByDays(dayIndex) {
+            const checkboxes = document.querySelectorAll(`input[name$="_${dayIndex}"]`);
+            if (checkboxes.length === 0) {
+                return;
+            }
+            const isChecked = checkboxes[0].checked;
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = !isChecked;
+            });
+            updateRequirementTotals();
+        }
+
+        function toggleCheckboxesAll() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            if (checkboxes.length === 0) {
+                return;
+            }
+            const isChecked = checkboxes[0].checked;
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = !isChecked;
+            });
+            updateRequirementTotals();
+        }
+
+        function updateRequirementTotals() {
+            const checkedCounts = {};
+            document.querySelectorAll('.availability-checkbox').forEach(checkbox => {
+                if (!checkbox.checked) {
+                    return;
+                }
+
+                const dayIndex = checkbox.dataset.dayIndex;
+                const positionId = checkbox.dataset.positionId;
+                if (!dayIndex || !positionId) {
+                    return;
+                }
+
+                const key = `${dayIndex}:${positionId}`;
+                checkedCounts[key] = (checkedCounts[key] || 0) + 1;
+            });
+
+            document.querySelectorAll('.requirements-column').forEach(cell => {
+                const dayIndex = cell.dataset.dayIndex;
+                const positionId = cell.dataset.positionId;
+                const baseRequired = Number(cell.dataset.baseRequired) || 0;
+                const covered = checkedCounts[`${dayIndex}:${positionId}`] || 0;
+                const remaining = Math.max(baseRequired - covered, 0);
+                cell.textContent = remaining;
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.availability-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', updateRequirementTotals);
+            });
+            updateRequirementTotals();
+        });
+    </script>
 
     {% endblock %}
