@@ -20,7 +20,7 @@
             <td>{{ requirement.position_name }}</td>
             <td>{{ requirement.required_count }}</td>
             <td>
-                <form method="post" action="{{ url_for('edit_requirement', requirement_id=requirement['id']) }}" >
+                <form method="post" action="{{ url_for('web.edit_requirement', requirement_id=requirement['id']) }}" >
                     <input type="number" name="required_count" value="{{ requirement.required_count }}" min="0" required>
                     <button type="submit">Zapisz</button>
                 </form>

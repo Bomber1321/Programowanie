@@ -1,14 +1,10 @@
-0. lista/dodawanie stanowisk
-1. dodawanie pracowników- select stanowiska
-2. potrzebne zmiany:
-w dniach
-według godzin dla umowy zlecenia(160)
+
 3. upload miesiąca do bazy✅
 4. download pliku excela
 5. api
--. automatyczne tworzenie grafiku raczej odpada
+6.podział
 
-                                    <span class="cell-content">{{ availability[(month_info['length'])*(employee['id'])-(month_info['length'])-1+day['day_index']][4] }}_{{ availability[(month_info['length'])*(employee['id'])-(month_info['length'])-1+day['day_index']][1] }}_{{ day['day_index'] }}</span>
+
 
 
 
@@ -20,3 +16,27 @@ pip install openpyxl
 flask --app app init-db
 flask --app app seed-db
 flask --app app run --debug
+
+
+
+
+from flask import Flask, render_template, g, redirect, url_for, flash, request, send_file, jsonify, abort
+import secrets
+import sqlite3
+import io
+import openpyxl
+from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
+from openpyxl.utils import get_column_letter
+from web.routes import web
+from db.init import close_db_init, init_db_command_init, seed_db_command_init
+
+
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = secrets.token_urlsafe(16)
+app.register_blueprint(web)
+
+
+close_db_init(app)
+init_db_command_init(app)
+seed_db_command_init(app)

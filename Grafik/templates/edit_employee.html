@@ -8,7 +8,7 @@
         <br>
         <ul>
             <li class="employee-detail">
-                <form method="post" action='{{ url_for('edit_employee_main_position', employee_id=employee['id']) }}'>
+                <form method="post" action='{{ url_for('web.edit_employee_main_position', employee_id=employee['id']) }}'>
                     <strong>Stanowisko:</strong> 
                     <select name="main_position">
                         <option value="{{ employee['positions'] }}" selected>{{ employee['positions'] }}</option>
@@ -21,7 +21,7 @@
                     <button type="submit">Zapisz</button>
                 </form></li>
             <li class="employee-detail">
-                <form method="post" action='{{ url_for('edit_employee_active', employee_id=employee['id']) }}'>
+                <form method="post" action='{{ url_for('web.edit_employee_active', employee_id=employee['id']) }}'>
                     <strong>Aktywny/a:</strong> <select name="active">
                         <option value="1" {% if employee['active'] == 1 %}selected{% endif %}>Tak</option>
                         <option value="0" {% if employee['active'] == 0 %}selected{% endif %}>Nie</option>
@@ -31,12 +31,12 @@
             </li>
             <li class="employee-detail">
                 <strong>Data dodania:</strong> {{ employee['created_at'] }}
-                <form action="{{ url_for('delete_employee', employee_id=employee['id']) }}" method="post" onsubmit="return confirm('Czy na pewno chcesz usunąć tego pracownika?');">
+                <form action="{{ url_for('web.delete_employee', employee_id=employee['id']) }}" method="post" onsubmit="return confirm('Czy na pewno chcesz usunąć tego pracownika?');">
                     <button type="submit" class="delete-button">Usuń pracownika</button>
                 </form>
             </li>
         </ul>
-        <form action="{{ url_for('list_employees') }}" method="get">
+        <form action="{{ url_for('web.list_employees') }}" method="get">
             <button type="submit">Powrót do listy pracowników</button>
         </form>
 

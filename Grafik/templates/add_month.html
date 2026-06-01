@@ -2,7 +2,7 @@
 {% block title %}Grafik - Tworzenie miesiąca{% endblock %}
     {% block content %}
     <h2>Tworzenie miesiąca</h2>
-    <form method="post" action="{{ url_for('add_month') }}">
+    <form method="post" action="{{ url_for('web.add_month') }}">
         <label for="year">Rok:</label>
         <input type="number" name="year" id="year" min="2020" max="2100" required placeholder="np. 2024">
         <label for="month">Wybierz miesiąc:</label>
@@ -28,11 +28,11 @@
             <ul class="month-list">
                 {% for month in months %}
                 <div class="month-item">
-                <form method="get" action="{{ url_for('month_availability', month_id=month['id']) }}">
+                <form method="get" action="{{ url_for('web.month_availability', month_id=month['id']) }}">
                     <li>{{ month['name'] }} {{ month['year'] }} ma {{ month['length'] }} dni, zaczyna się od {{ month['weekday_start'] }} 
                         <button type="submit" >Edytuj</button></li>
                 </form>
-                <form method="get" action="{{ url_for('download_availability', month_id=month['id']) }}">
+                <form method="get" action="{{ url_for('web.download_availability', month_id=month['id']) }}">
                     <button type="submit">Pobierz plik Excel</button>
                 </form></div>
                 <br>

@@ -2,7 +2,7 @@
 {% block title %}ToDo List - Lista pracowników{% endblock %}
     {% block content %}
     <h2>Dodawanie pracowników</h2>
-    <form method="post" action="{{ url_for('list_employees') }}">
+    <form method="post" action="{{ url_for('web.list_employees') }}">
         <label for="name">Imię:</label>
         <input type="text" name="name" id="name" required placeholder="np. Jan">
         <label for="surname">Nazwisko:</label>
@@ -28,7 +28,7 @@
                     <br>
                     <small>({{ employee['positions'] }})</small>
     
-                    <form method="get" action='{{ url_for('edit_employee', employee_id=employee['id']) }}' style="display:inline;">
+                    <form method="get" action='{{ url_for('web.edit_employee', employee_id=employee['id']) }}' style="display:inline;">
                         <button type="submit">Edytuj</button>
                     </form>
                 </div>
